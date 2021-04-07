@@ -10,3 +10,4 @@
 * #### javaFX
 * #### H2 database
 * #### flyway
+* #### (later) CalendarFx [https://github.com/dlsc-software-consulting-gmbh/CalendarFX]
