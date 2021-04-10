@@ -1,5 +1,7 @@
 package com.pl.bg.javamasproject.demo.SQL;
 
+import com.pl.bg.javamasproject.demo.tools.Looper;
+
 import java.util.List;
 
 public class SqlTools <T>{
@@ -24,6 +26,20 @@ public class SqlTools <T>{
         return stb.toString();
     }
 
+    public String formatFieldsToSelectQuery(List<String> columns ) {
+        StringBuilder stb = new StringBuilder();
+
+        Looper.forLoop(0,columns.size(),i -> {
+            if(i+1 == columns.size()) {
+                stb.append(columns.get(i));
+            }else {
+                stb.append(columns.get(i) + ",");
+
+            }
+        });
+
+        return stb.toString();
+    }
 
 
 }

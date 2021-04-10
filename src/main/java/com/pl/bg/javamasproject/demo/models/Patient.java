@@ -1,11 +1,16 @@
 package com.pl.bg.javamasproject.demo.models;
 
+import com.pl.bg.javamasproject.demo.tools.Looper;
+
 import javax.persistence.*;
-import java.util.Set;
+import java.lang.annotation.ElementType;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.Function;
 
 @Entity
 @Table(name = "patients")
-public class Patient {
+public class Patient extends EntityTemplate{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +20,6 @@ public class Patient {
     private int id_card;
     @Column(name = "id_client")
     private int id_client;
-
-
 
     public Patient(String name, int idCard, int idClient) {
         this.name = name;
@@ -64,4 +67,33 @@ public class Patient {
     public String toString() {
         return "('"+ name +"'" +","+id_card +","+ id_client+")";
     }
+
+  //  Set<P> s = Collections.synchronizedSet(EnumSet.noneOf(Fields.class));
+
+   @Override
+    public  List<String> fields () {
+
+        List<String> fieldsList = new ArrayList<>();
+        Field[] tab =new Patient().getClass().getDeclaredFields();
+
+
+        Looper.forLoop(0,tab.length,i -> fieldsList.add(tab[i].getName()));
+
+        return fieldsList;
+    }
+
+    @Override
+    public EnumSet fieldsEnum() {
+
+        return EnumSet.allOf(fieldsNames.class);
+    }
+
+    public enum fieldsNames{
+
+        ID,NAME,ID_CARD,ID_CLIENT
+
+    }
+
 }
+
+

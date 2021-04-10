@@ -38,7 +38,8 @@ public class PatientController  implements ControllerTemplate, Initializable {
     @Override
     public void addRecord() {
 
-        new Repository<Patient>().insert(new Patient(name.getText(),(int)comboBox_card.getValue(),(int)comboBox_client.getValue()));
+        new Repository<Patient>().insert(
+                new Patient(name.getText(),(int)comboBox_card.getValue(),(int)comboBox_client.getValue()));
 
     }
 
@@ -55,6 +56,8 @@ public class PatientController  implements ControllerTemplate, Initializable {
 
     @Override
     public void updateRecord() {
+
+        new Repository<Patient>().update(new Patient(),1,"dupa","name");
 
     }
 

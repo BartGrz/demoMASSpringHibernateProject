@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SqlAction<T> {
 
-   void sqlAction(String sql);
+   void sqlAction(T t, String sql);
 
 }

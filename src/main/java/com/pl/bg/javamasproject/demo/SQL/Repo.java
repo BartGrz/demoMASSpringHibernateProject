@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface Repo<T>  {
 
-    List<T> executeSqlCommend_SelectAll(T t);
+    List<T> executeSqlCommend_Select(String sql);
     void executeSqlCommend_insert();
     void executeSqlCommend_delete(int id);
-//    void executeSqlCommend_update();
+    void executeSqlCommend_update(int id,String value);
 
 
 }

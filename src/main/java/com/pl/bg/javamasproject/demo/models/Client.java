@@ -1,25 +1,26 @@
 package com.pl.bg.javamasproject.demo.models;
 
 
+import com.pl.bg.javamasproject.demo.tools.Looper;
+
 import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "clients")
-public class Client  {
+public class Client extends EntityTemplate {
 
     @Id
     private int id;
     private String name;
-    @Column(name = "id_patient")
-    private int id_patient;
 
-
-
-    public Client( String name, int idPatient) {
+    public Client( String name ) {
 
         this.name = name;
-        this.id_patient = idPatient;
     }
 
     public Client() {
@@ -42,18 +43,43 @@ public class Client  {
         this.name = name;
     }
 
-    public int getIdPatient() {
-        return id_patient;
-    }
-
-    public void setIdPatient(int idPatient) {
-        this.id_patient = idPatient;
-    }
 
     @Override
     public String toString() {
-        return "('" + name + "'" +
-                "," + id_patient +")" ;
+        return "('" + name + "')" ;
+    }
+
+
+    /**
+     * @return list of declared fields
+     * @method template impl {
+     * public List<String> fields () {
+     * List<String> fieldsList = new ArrayList<>();
+     * Field[] tab =new (ModelClass).getClass().getDeclaredFields();
+     * Looper.forLoop(0,tab.length,i -> fieldsList.add(tab[i].getName()));
+     * return fieldsList;
+     * }
+     * }
+     */
+    @Override
+    public List<String> fields() {
+
+        List<String> fieldsList = new ArrayList<>();
+      Field[] tab =new Client().getClass().getDeclaredFields();
+      Looper.forLoop(0,tab.length, i -> fieldsList.add(tab[i].getName()));
+
+        return fieldsList;
+    }
+
+    @Override
+    public EnumSet fieldsEnum() {
+
+        return null;
+    }
+    enum fieldsName {
+
+       ID,NAME
+
     }
 
 
