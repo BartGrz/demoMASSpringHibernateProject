@@ -1,0 +1,1 @@
+alter table PATIENTS add foreign key (id_client) references CLIENTS(id);
