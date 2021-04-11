@@ -30,11 +30,11 @@ class PatientControllerTest {
 
        List<Patient> patientList =  new CompleksSelectQuery.Builder<Patient>()
                .setColumn(Patient.fieldsNames.NAME)
-               .from()
+               .from(new Patient())
                .where(Patient.fieldsNames.ID)
                .equal(1)
                .end()
-               .buildSelectQueryFor(new Patient());
+               .buildSelectQuery();
 
         System.out.println(patientList);
     }

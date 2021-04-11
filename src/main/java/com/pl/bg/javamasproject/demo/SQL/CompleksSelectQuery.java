@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CompleksSelectQuery<T> {
 
-
+    T t;
 
     private Object condition;
     private List<String> columns = new ArrayList<>();
@@ -18,6 +18,8 @@ public class CompleksSelectQuery<T> {
 
 
     public static class Builder <T>{
+
+        T t;
 
         private Object condition;
         private List<String> columns = new ArrayList<>();
@@ -29,7 +31,9 @@ public class CompleksSelectQuery<T> {
             columns.add(val.toString().toLowerCase());
             return this;
         }
-        public Builder from() {
+        public Builder from(T val) {
+
+            t= val;
 
             return this;
         }
@@ -61,10 +65,11 @@ public class CompleksSelectQuery<T> {
         condition=builder.condition;
         columns =builder.columns;
         condition_test = builder.condition_test;
+        t = (T) builder.t;
 
     }
 
-    public  List<T> buildSelectQueryFor(T t) {
+    public  List<T> buildSelectQuery() {
 
         String tableName = t.getClass().getSimpleName();
         String sqlQuery = null;
@@ -85,11 +90,11 @@ public class CompleksSelectQuery<T> {
 
     public static void main(String[] args) {
        List<Patient> lista =  new CompleksSelectQuery.Builder<Patient>().setColumn(Patient.fieldsNames.NAME)
-                .from()
+                .from(new Patient())
                 .where(Patient.fieldsNames.ID)
                 .equal(1)
                 .end()
-                .buildSelectQueryFor(new Patient());
+                .buildSelectQuery();
 
         System.out.println(lista);
 
