@@ -26,7 +26,7 @@ public class SqlTools <T>{
         return stb.toString();
     }
 
-    public String formatFieldsToSelectQuery(List<String> columns ) {
+    public  String formatFieldsToSelectQuery(List<String> columns ) {
         StringBuilder stb = new StringBuilder();
 
         Looper.forLoop(0,columns.size(),i -> {
@@ -37,6 +37,32 @@ public class SqlTools <T>{
 
             }
         });
+
+        return stb.toString();
+    }
+
+    public static String formatValuesToInsertQuery(List<Object> list) {
+
+
+        StringBuilder stb = new StringBuilder();
+
+        stb.append("(");
+        for (int i = 0; i< list.size();i++) {
+
+            if(list.get(i).getClass().getSimpleName().equals("String")) {
+                stb.append("'"+list.get(i)+"'");
+            }else {
+                stb.append(list.get(i));
+            }
+            if(i+1 !=list.size()) {
+                stb.append(",");
+            }else {
+
+            }
+
+
+    }
+        stb.append(")");
 
         return stb.toString();
     }

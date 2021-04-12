@@ -1,7 +1,9 @@
 package com.pl.bg.javamasproject.demo.controllers;
 
+import com.pl.bg.javamasproject.demo.SQL.InsertQueryBuilder;
 import com.pl.bg.javamasproject.demo.SQL.Repository;
 import com.pl.bg.javamasproject.demo.models.Patient;
+import com.sun.javafx.fxml.expression.KeyPath;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,8 +40,14 @@ public class PatientController  implements ControllerTemplate, Initializable {
     @Override
     public void addRecord() {
 
-        new Repository<Patient>().insert(
-                new Patient(name.getText(),(int)comboBox_card.getValue(),(int)comboBox_client.getValue()));
+        new InsertQueryBuilder.Builder<Patient>()
+                .insertInto(Patient.class)
+                .fields(new Patient().fields())
+                .value(name.getText())
+                .value(comboBox_client.getValue())
+                .value(comboBox_card.getValue())
+                .end()
+                .generateAndExecuteSQL();
 
     }
 
