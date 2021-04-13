@@ -3,6 +3,7 @@ import com.pl.bg.javamasproject.demo.tools.Looper;
 import javafx.fxml.Initializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,7 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreUpdate;
 import javax.persistence.criteria.CriteriaBuilder;
+
 import java.net.URL;
 import java.util.*;
 
@@ -67,7 +69,7 @@ abstract class EntityTemplate  {
     }
 
     //FIXME  nie dziala, trzeba sprawic by sie validowalo bez wywolywania bezposredniego
-    @PostPersist
+    @PostConstruct
     public void validate(){
 
         List<String> list = validateEnumVerTableColumns();
@@ -79,9 +81,7 @@ abstract class EntityTemplate  {
         }else {
             logger.warn("DATA VALIDATION OK ");
         }
-
     }
-
 
 
 }

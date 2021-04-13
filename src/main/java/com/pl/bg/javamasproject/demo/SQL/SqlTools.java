@@ -8,7 +8,7 @@ public class SqlTools <T>{
 
     T t;
 
-    public String formatFieldsToInsert(List<String> fields) {
+    public static String formatFieldsToInsert(List<String> fields) {
 
         StringBuilder stb = new StringBuilder();
         stb.append("(");
@@ -26,7 +26,7 @@ public class SqlTools <T>{
         return stb.toString();
     }
 
-    public  String formatFieldsToSelectQuery(List<String> columns ) {
+    public static  String  formatFieldsToSelectQuery(List<String> columns ) {
         StringBuilder stb = new StringBuilder();
 
         Looper.forLoop(0,columns.size(),i -> {

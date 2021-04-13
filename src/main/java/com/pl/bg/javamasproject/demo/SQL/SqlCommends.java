@@ -1,6 +1,7 @@
 package com.pl.bg.javamasproject.demo.SQL;
 
 import com.pl.bg.javamasproject.demo.models.Client;
+import com.pl.bg.javamasproject.demo.models.Patient;
 import com.pl.bg.javamasproject.demo.tools.Looper;
 import org.hibernate.FetchMode;
 import org.hibernate.Session;
@@ -8,13 +9,19 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
+import javax.persistence.Entity;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static javax.persistence.criteria.JoinType.INNER;
 
 public class SqlCommends<T> implements Repo<T> {
 
@@ -93,49 +100,27 @@ public class SqlCommends<T> implements Repo<T> {
         return  query.getResultList();
     }
 
-    public List<String> readFromResultQuery(String sql) {
-        List<String> results = new ArrayList<>();
+    public List<Object> readFromResultQuery(String sql) {
+        List<Object> results = new ArrayList<>();
        List<Object[]> list = executeSqlCommend_Select(sql);
         Looper.forLoop(0,list.size(),i -> {
-            for(int j = 0;j<list.get(0).length;j++) {
+           // for(int j = 0;j<2;j++) {
+                System.out.println(list.get(i));
 
-               results.add(String.valueOf(list.get(i)[j]));
-            }
+              // results.add((list.get(i)[j]));
+               //FIXME dodac przerobienbie na zwrracanie zbudowanego obiektu
+
+         //   }
 
         });
         return results;
     }
-
-    public List<Object[]> getCategoryList () throws SQLException, ClassNotFoundException, IOException {
-
+    public List<T> GenerateJoinSelectResult(CriteriaQuery<T> cq,int id) {
 
         Session session = session(sessionFactory());
-
-        return session.createCriteria(Client.class)
-                .setFetchMode("patients", FetchMode.JOIN)
-                .add(Restrictions.eq("id", 1))
-                .list();
-
-    }
-
-    public List executeSELECTTEST(String sql) {
-
-    List result = new ArrayList();
-
-        Session session = session(sessionFactory());
-
-        if (session.isOpen()) {
-
-            Query query = session.createQuery("from Patient p join Client  c on p.id=c.id where c.id =1");
-            result = query.getResultList();
-            System.out.println(result);
-
-            session.getTransaction().commit();
-            session.close();
-        } else {
-            System.out.println("ERROR session is closed");
-        }
-        return result;
+        TypedQuery allQuery = session.createQuery(cq);
+        allQuery.setParameter("id",id);
+        return allQuery.getResultList();
     }
 
     @Override
@@ -147,7 +132,6 @@ public class SqlCommends<T> implements Repo<T> {
             session.createNativeQuery(sql)
                     .setParameter("column",newValue)
                     .setParameter("id", id)
-
                     .executeUpdate();
 
             session.getTransaction().commit();
@@ -171,6 +155,10 @@ public class SqlCommends<T> implements Repo<T> {
 
         return sessionFactory;
 
+    }
+    public  Session getSession() {
+        Session session = session(sessionFactory());
+        return session;
     }
 
 }

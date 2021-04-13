@@ -1,15 +1,12 @@
 package com.pl.bg.javamasproject.demo.models;
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
-import javafx.fxml.Initializable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import java.lang.reflect.Field;
-import java.net.URL;
+
 import java.util.*;
 
 
@@ -28,11 +25,25 @@ public class Patient extends EntityTemplate  {
     private int id_client;
     @ManyToOne
     @JoinColumn(name = "id_client", insertable = false ,updatable = false)
-    private Client client;
+    private Client client = new Client();
 
     public Patient() {
     }
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPatient_name() {
+        return patient_name;
+    }
+
+    public void setPatient_name(String patient_name) {
+        this.patient_name = patient_name;
+    }
 
     public int getId_card() {
         return id_card;
@@ -46,36 +57,16 @@ public class Patient extends EntityTemplate  {
         return id_client;
     }
 
-    public int getId() {
-        return id;
+    public void setId_client(int id_client) {
+        this.id_client = id_client;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Client getClient() {
+        return client;
     }
 
-    public String getName() {
-        return patient_name;
-    }
-
-    public void setName(String name) {
-        this.patient_name = name;
-    }
-
-    public int getIdCard() {
-        return id_card;
-    }
-
-    public void setIdCard(int idCard) {
-        this.id_card = idCard;
-    }
-
-    public int getIdClient() {
-        return id_client;
-    }
-
-    public void setIdClient(int idClient) {
-        this.id_client = idClient;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
@@ -107,9 +98,10 @@ public class Patient extends EntityTemplate  {
 
         return EnumSet.allOf(fieldsNames.class);
     }
+
     public enum fieldsNames{
 
-        ID,PATIENT_NAME,ID_CARD,ID_CLIENT
+        ID,PATIENT_NAME,ID_CARD,ID_CLIENT,CLIENT
 
     }
 

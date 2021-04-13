@@ -18,13 +18,12 @@ public class Client extends EntityTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "client_name")
     private String client_name;
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
-    private Set<Patient> patients;
+    private Set<Patient> patients ;
 
     public Client() {
-
     }
 
     public int getId() {
@@ -35,12 +34,12 @@ public class Client extends EntityTemplate {
         this.id = id;
     }
 
-    public String getName() {
+    public String getClient_name() {
         return client_name;
     }
 
-    public void setName(String name) {
-        this.client_name = name;
+    public void setClient_name(String client_name) {
+        this.client_name = client_name;
     }
 
     public Set<Patient> getPatients() {
@@ -98,7 +97,7 @@ public class Client extends EntityTemplate {
 
     public enum fieldsName {
 
-       ID,CLIENT_NAME;
+       ID,CLIENT_NAME,PATIENTS;
     }
 
 
