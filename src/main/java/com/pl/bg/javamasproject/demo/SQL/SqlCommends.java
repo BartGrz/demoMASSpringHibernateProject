@@ -115,11 +115,19 @@ public class SqlCommends<T> implements Repo<T> {
         });
         return results;
     }
-    public List<T> GenerateJoinSelectResult(CriteriaQuery<T> cq,int id) {
+    public List<T> getJoinSelectResult(CriteriaQuery<T> cq,Object id) {
 
         Session session = session(sessionFactory());
         TypedQuery allQuery = session.createQuery(cq);
         allQuery.setParameter("id",id);
+
+        return allQuery.getResultList();
+    }
+    public List<T> getBasicSelectResult(CriteriaQuery<T> cq) {
+
+        Session session = session(sessionFactory());
+        TypedQuery allQuery = session.createQuery(cq);
+
         return allQuery.getResultList();
     }
 

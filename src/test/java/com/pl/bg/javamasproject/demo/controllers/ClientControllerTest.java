@@ -2,7 +2,6 @@ package com.pl.bg.javamasproject.demo.controllers;
 
 
 import com.pl.bg.javamasproject.demo.SQL.InsertQueryBuilder;
-import com.pl.bg.javamasproject.demo.SQL.Repository;
 import com.pl.bg.javamasproject.demo.SQL.SelectQueryBuilder;
 import com.pl.bg.javamasproject.demo.models.Client;
 import com.pl.bg.javamasproject.demo.models.Patient;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class ClientControllerTest {
 
@@ -18,13 +16,22 @@ class ClientControllerTest {
     void showRecord() {
 
        List<Client> list = new SelectQueryBuilder.Builder<Client,Patient>()
-               .joinSet(Client.fieldsName.PATIENTS)
-               .setForeignKey(Patient.fieldsNames.ID_CLIENT)
-               .setIdVaule(3)
+               .joinSet(Client.fieldsNames.PATIENTS)
+               .where(Patient.fieldsNames.ID_CLIENT)
+               .equal(3)
                .build()
                .GenerateJoinSelectResult(Client.class);
 
         System.out.println(list);
+
+        List<Patient> lista = new SelectQueryBuilder.Builder<Patient,Client>()
+                .where(Patient.fieldsNames.ID_CLIENT).equal(3)
+                .build()
+                .GenerateBasicSelectResult(Patient.class);
+
+
+
+        System.out.println(lista);
     }
 
     @Test

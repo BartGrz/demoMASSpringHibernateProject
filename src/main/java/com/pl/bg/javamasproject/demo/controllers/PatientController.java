@@ -7,6 +7,7 @@ import com.pl.bg.javamasproject.demo.models.Client;
 import com.pl.bg.javamasproject.demo.models.Patient;
 import com.pl.bg.javamasproject.demo.tools.FXML_tools.TableViewCreator;
 
+import com.pl.bg.javamasproject.demo.tools.Looper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,30 +36,28 @@ public class PatientController  implements ControllerTemplate, Initializable {
     @FXML
     ComboBox comboBox_card = new ComboBox();
     @FXML
-    TableView tableView = new TableView();
+    TableView tableView = new TableView() ,tableView_client = new TableView();
 
-    ObservableList<Integer> list_client = FXCollections.observableArrayList();
+    ObservableList<String> list_client = FXCollections.observableArrayList();
     ObservableList<Integer> list_card = FXCollections.observableArrayList();
-
 
     @Override
     public void addRecord() {
 
-        new InsertQueryBuilder.Builder<Patient>()
-                .insertInto(Patient.class)
-                .fields(new Patient().fields())
-                .value(name.getText())
-                .value(comboBox_client.getValue())
-                .value(comboBox_card.getValue())
-                .end()
-                .generateAndExecuteSQL();
+        List<Client> getNameById = new SelectQueryBuilder.Builder<Client,Patient>()
+                .where(Client.fieldsNames.CLIENT_NAME)
+                .equal(comboBox_client.getValue())
+                .build()
+                .GenerateBasicSelectResult(Client.class);
 
+        int fetchIDFromTableByName = getNameById.stream().map(Client::getClient_number).collect(Collectors.toList()).get(0);
+        System.out.println(fetchIDFromTableByName);
     }
 
     @Override
     public void deleteRecord() {
 
-        new Repository<Patient>().delete(new Patient(), 1);
+
     }
 
     @Override
@@ -68,31 +67,21 @@ public class PatientController  implements ControllerTemplate, Initializable {
 
     @Override
     public void updateRecord() {
-
-        new Repository<Patient>().update(new Patient(), 1, "dupa", "name");
-
     }
 
     @Override
     public void start(Stage stage) throws IOException {
 
         Parent root = new FXMLLoader().load(getClass().getClassLoader().getResource("FXML/patientAdding.fxml"));
-        Scene scene = new Scene(root, 280, 250);
+        Scene scene = new Scene(root, 520, 250);
         stage.setScene(scene);
         stage.show();
 
 
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        for (int i = 0; i < 10; i++) {
-            list_card.add(i);
-            list_client.add(i);
-        }
-
 
         comboBox_client.getItems().addAll(list_client);
         comboBox_card.getItems().addAll(list_card);
@@ -103,51 +92,58 @@ public class PatientController  implements ControllerTemplate, Initializable {
                 .setField(Patient.fieldsNames.PATIENT_NAME)
                 .build()
                 .buildColumn();
-        TableColumn t_3 = new TableViewCreator.Builder<String, Patient>()
+        TableColumn t_3 = new TableViewCreator.Builder<Integer, Patient>()
                 .setColumnName("IDCARD")
                 .setField(Patient.fieldsNames.ID_CARD)
                 .build()
                 .buildColumn();
-        TableColumn t_4 = new TableViewCreator.Builder<String, String>()
-                .setColumnName("ClientName")
-                .setField(Client.fieldsName.CLIENT_NAME)
+        TableColumn t_4 = new TableViewCreator.Builder<String, Client>()
+                .setColumnName("Name")
+                .setField(Client.fieldsNames.CLIENT_NAME)
+                .build()
+                .buildColumn();
+        TableColumn t_5 = new TableViewCreator.Builder<Integer, Client>()
+                .setColumnName("ID")
+                .setField(Client.fieldsNames.ID)
+                .build()
+                .buildColumn();
+        TableColumn t_6 = new TableViewCreator.Builder<Integer, Client>()
+                .setColumnName("CLientNumber")
+                .setField(Client.fieldsNames.CLIENT_NUMBER)
                 .build()
                 .buildColumn();
 
-        List<Client> lista= new SelectQueryBuilder.Builder<Client,Patient>()
-                .joinSet(Client.fieldsName.PATIENTS)
-                .setForeignKey(Patient.fieldsNames.ID_CLIENT)
-                .setIdVaule(3)
-                .build()
-                .GenerateJoinSelectResult(Client.class);
-
-
         tableView.getColumns().addAll(t_1,t_3);
+        tableView_client.getColumns().addAll(t_4,t_5,t_6);
 
+        List <Client> list_clients = new SelectQueryBuilder.Builder<Client,Patient>()
+                                    .joinSet(Client.fieldsNames.PATIENTS)
+                                    .where(Client.fieldsNames.ID)
+                                    .equal(3)
+                                    .build()
+                                    .GenerateJoinSelectResult(Client.class);
 
-        Client client = new Client();
-        List<Client> cl = new ArrayList<>();
-
-
-        String patName = lista.stream().map(Client::getPatients).collect(Collectors.toList()).get(0).stream().map(Patient::getPatient_name).collect(Collectors.toList()).get(0);
-        int patCard =lista.stream().map(Client::getPatients).collect(Collectors.toList()).get(0).stream().map(Patient::getId_card).collect(Collectors.toList()).get(0);
-
-        Patient patient = new Patient();
-        List<Patient> listPat = new ArrayList<>();
-        patient.setPatient_name(patName);
-        patient.setId_card(patCard);
-        listPat.add(patient);
-
-
-
-       tableView.getItems().add(listPat.get(0));
+        List<Client> listClientNames = new SelectQueryBuilder.Builder<Client,Patient>()
+                .build()
+                .GenerateBasicSelectResult(Client.class);
 
 
 
 
+        List<Patient> listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
+        List<Client> listOfClients = new ArrayList<>();
 
+        for (int i = 0;i<list_clients.size();i++) {
 
+            listOfClients.add(list_clients.get(i));
+
+        }
+        Looper.forLoop(0,listClientNames.size(),i -> comboBox_client.getItems().add(listClientNames.get(i).getClient_name()));
+        Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
+        Looper.forLoop(0, listOfClients.size(),i -> tableView_client.getItems().add(listOfClients.get(i)));
 
 
     }
+
+
 }

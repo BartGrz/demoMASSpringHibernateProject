@@ -20,6 +20,8 @@ public class Client extends EntityTemplate {
     private int id;
     @Column(name = "client_name")
     private String client_name;
+    @Column(name = "client_number")
+    private int client_number;
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL)
     private Set<Patient> patients ;
 
@@ -40,6 +42,14 @@ public class Client extends EntityTemplate {
 
     public void setClient_name(String client_name) {
         this.client_name = client_name;
+    }
+
+    public int getClient_number() {
+        return client_number;
+    }
+
+    public void setClient_number(int client_number) {
+        this.client_number = client_number;
     }
 
     public Set<Patient> getPatients() {
@@ -95,9 +105,9 @@ public class Client extends EntityTemplate {
         return EnumSet.allOf(Patient.fieldsNames.class);
     }
 
-    public enum fieldsName {
+    public enum fieldsNames {
 
-       ID,CLIENT_NAME,PATIENTS;
+       ID,CLIENT_NAME,PATIENTS,CLIENT_NUMBER
     }
 
 

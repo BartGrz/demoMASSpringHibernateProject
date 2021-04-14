@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="311.0" prefWidth="504.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pl.bg.javamasproject.demo.controllers.PatientController">
+<AnchorPane prefHeight="317.0" prefWidth="582.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pl.bg.javamasproject.demo.controllers.PatientController">
    <children>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="504.0">
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="582.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -31,6 +31,7 @@
       <Button fx:id="button" layoutX="104.0" layoutY="220.0" mnemonicParsing="false" onAction="#addRecord" text="ADD NEW PATIENT" />
       <ComboBox fx:id="comboBox_client" layoutX="89.0" layoutY="109.0" prefWidth="150.0" />
       <ComboBox fx:id="comboBox_card" layoutX="89.0" layoutY="161.0" prefWidth="150.0" />
-      <TableView fx:id="tableView" layoutX="290.0" layoutY="26.0" prefHeight="286.0" prefWidth="213.0" />
+      <TableView fx:id="tableView" layoutX="290.0" layoutY="26.0" prefHeight="286.0" prefWidth="119.0" />
+      <TableView fx:id="tableView_client" layoutX="409.0" layoutY="26.0" prefHeight="286.0" prefWidth="119.0" />
    </children>
 </AnchorPane>
