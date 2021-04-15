@@ -8,6 +8,7 @@ import com.pl.bg.javamasproject.demo.models.Patient;
 import com.pl.bg.javamasproject.demo.tools.FXML_tools.TableViewCreator;
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
+import com.sun.javafx.fxml.expression.KeyPath;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.IOException;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class PatientController  implements ControllerTemplate, Initializable {
 
+    public static final Logger logger = LoggerFactory.getLogger(PatientController.class);
     @FXML
     Button button = new Button("ADD NEW PATIENT");
     @FXML
@@ -36,23 +40,32 @@ public class PatientController  implements ControllerTemplate, Initializable {
     @FXML
     ComboBox comboBox_card = new ComboBox();
     @FXML
+    ComboBox comboBox_chooseClient = new ComboBox();
+    @FXML
     TableView tableView = new TableView() ,tableView_client = new TableView();
 
-    ObservableList<String> list_client = FXCollections.observableArrayList();
-    ObservableList<Integer> list_card = FXCollections.observableArrayList();
-
+    private List<Client> listOfClients = new ArrayList<>();
+    private List <Client> list_clients = new ArrayList<>();
+    private List<Patient> listOfPatients = new ArrayList<>();
+    private ObservableList<String> list_client = FXCollections.observableArrayList();
+    private ObservableList<Integer> list_card = FXCollections.observableArrayList();
+    private Map<String,Integer> map = new HashMap<>();
     @Override
     public void addRecord() {
 
-        List<Client> getNameById = new SelectQueryBuilder.Builder<Client,Patient>()
-                .where(Client.fieldsNames.CLIENT_NAME)
-                .equal(comboBox_client.getValue())
-                .build()
-                .GenerateBasicSelectResult(Client.class);
+                    new InsertQueryBuilder.Builder<Patient>()
+                            .insertInto(Patient.class)
+                            .fields(new Patient().fields())
+                            .value(name.getText())
+                            .value(comboBox_card.getValue())
+                            .value(map.get(comboBox_client.getValue().toString()))
+                            .end()
+                            .generateAndExecuteSQL();
 
-        int fetchIDFromTableByName = getNameById.stream().map(Client::getClient_number).collect(Collectors.toList()).get(0);
-        System.out.println(fetchIDFromTableByName);
-    }
+                    refreshTables();
+
+        }
+
 
     @Override
     public void deleteRecord() {
@@ -73,15 +86,18 @@ public class PatientController  implements ControllerTemplate, Initializable {
     public void start(Stage stage) throws IOException {
 
         Parent root = new FXMLLoader().load(getClass().getClassLoader().getResource("FXML/patientAdding.fxml"));
-        Scene scene = new Scene(root, 520, 250);
+        Scene scene = new Scene(root, 574, 382);
         stage.setScene(scene);
         stage.show();
-
 
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        for(int i = 0 ; i<25;i++) {
+            list_card.add(i);
+        }
 
         comboBox_client.getItems().addAll(list_client);
         comboBox_card.getItems().addAll(list_card);
@@ -116,34 +132,89 @@ public class PatientController  implements ControllerTemplate, Initializable {
         tableView.getColumns().addAll(t_1,t_3);
         tableView_client.getColumns().addAll(t_4,t_5,t_6);
 
-        List <Client> list_clients = new SelectQueryBuilder.Builder<Client,Patient>()
-                                    .joinSet(Client.fieldsNames.PATIENTS)
-                                    .where(Client.fieldsNames.ID)
-                                    .equal(3)
-                                    .build()
-                                    .GenerateJoinSelectResult(Client.class);
+        fillingInComboBox();
+
+        refreshTables();
+        Looper.forLoop(0, listOfClients.size(),i -> tableView_client.getItems().add(listOfClients.get(i)));
+
+
+    }
+    public void fillingInComboBox() {
 
         List<Client> listClientNames = new SelectQueryBuilder.Builder<Client,Patient>()
                 .build()
                 .GenerateBasicSelectResult(Client.class);
 
 
+        Looper.forLoop(0,listClientNames.size(),i -> map.put(listClientNames.get(i).getClient_name(),listClientNames.get(i).getId()));
+
+        Looper.forLoop(0,listClientNames.size(),i -> {
+
+            comboBox_client.getItems().add(listClientNames.get(i).getClient_name());
+            comboBox_chooseClient.getItems().add(listClientNames.get(i).getClient_name());
+
+        });
 
 
-        List<Patient> listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
-        List<Client> listOfClients = new ArrayList<>();
+    }
+    public void refreshTables() {
+
+        tableView.getItems().removeAll(tableView.getItems());
+
+        list_clients = new SelectQueryBuilder.Builder<Client,Patient>()
+                .joinSet(Client.fieldsNames.PATIENTS)
+                .where(Client.fieldsNames.ID)
+                .equal(1)
+                .build()
+                .GenerateJoinSelectResult(Client.class);
+
+        if(!list_clients.isEmpty()) {
 
         for (int i = 0;i<list_clients.size();i++) {
 
             listOfClients.add(list_clients.get(i));
+        }
+
+        listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
+
+        Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
+        }else {
 
         }
-        Looper.forLoop(0,listClientNames.size(),i -> comboBox_client.getItems().add(listClientNames.get(i).getClient_name()));
+
+    }
+
+    public void changeClient() {
+
+        listOfPatients = new ArrayList<>();
+        list_clients= new ArrayList<>();
+        listOfClients=new ArrayList<>();
+
+        tableView.getItems().removeAll(tableView.getItems());
+        tableView_client.getItems().removeAll(tableView_client.getItems());
+
+            int id = map.get(comboBox_chooseClient.getValue().toString());
+
+        list_clients = new SelectQueryBuilder.Builder<Client,Patient>()
+                .joinSet(Client.fieldsNames.PATIENTS)
+                .where(Patient.fieldsNames.ID_CLIENT)
+                .equal(id)
+                .build()
+                .GenerateJoinSelectResult(Client.class);
+
+
+        for (int i = 0;i<list_clients.size();i++) {
+
+            listOfClients.add(list_clients.get(i));
+        }
+
+        listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
+
         Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
-        Looper.forLoop(0, listOfClients.size(),i -> tableView_client.getItems().add(listOfClients.get(i)));
+        tableView_client.getItems().add(listOfClients.get(0));
 
 
     }
 
-
 }
+

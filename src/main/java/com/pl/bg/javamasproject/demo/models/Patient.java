@@ -25,7 +25,7 @@ public class Patient extends EntityTemplate  {
     private int id_client;
     @ManyToOne
     @JoinColumn(name = "id_client", insertable = false ,updatable = false)
-    private Client client = new Client();
+    private Client client;
 
     public Patient() {
     }
