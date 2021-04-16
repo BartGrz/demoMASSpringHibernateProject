@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
 
 public class PatientController  implements ControllerTemplate, Initializable {
 
@@ -133,9 +133,8 @@ public class PatientController  implements ControllerTemplate, Initializable {
         tableView_client.getColumns().addAll(t_4,t_5,t_6);
 
         fillingInComboBox();
-
         refreshTables();
-        Looper.forLoop(0, listOfClients.size(),i -> tableView_client.getItems().add(listOfClients.get(i)));
+
 
 
     }
@@ -159,28 +158,33 @@ public class PatientController  implements ControllerTemplate, Initializable {
     }
     public void refreshTables() {
 
+        listOfPatients = new ArrayList<>();
+        list_clients = new ArrayList<>();
+        listOfClients = new ArrayList<>();
+
+        comboBox_chooseClient.setValue(null);
         tableView.getItems().removeAll(tableView.getItems());
+        tableView_client.getItems().removeAll(tableView_client.getItems());
 
         list_clients = new SelectQueryBuilder.Builder<Client,Patient>()
-                .joinSet(Client.fieldsNames.PATIENTS)
-                .where(Client.fieldsNames.ID)
-                .equal(1)
                 .build()
-                .GenerateJoinSelectResult(Client.class);
+                .GenerateBasicSelectResult(Client.class);
+        List<Patient> list_patients = new SelectQueryBuilder.Builder<Patient,Client>()
+                .build()
+                .GenerateBasicSelectResult(Patient.class);
 
         if(!list_clients.isEmpty()) {
 
-        for (int i = 0;i<list_clients.size();i++) {
+            for (int i = 0;i<list_clients.size();i++) {
 
-            listOfClients.add(list_clients.get(i));
-        }
-
-        listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
-
-        Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
+                listOfClients.add(list_clients.get(i));
+            }
         }else {
 
         }
+        Looper.forLoop(0,list_patients.size(),i -> listOfPatients.add(list_patients.get(i)));
+        Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
+        Looper.forLoop(0,listOfClients.size(),i -> tableView_client.getItems().add(listOfClients.get(i)));
 
     }
 
@@ -207,11 +211,13 @@ public class PatientController  implements ControllerTemplate, Initializable {
 
             listOfClients.add(list_clients.get(i));
         }
+        if(!list_clients.isEmpty()) {
+            listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
+            Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
+            tableView_client.getItems().add(listOfClients.get(0));
+        }
 
-        listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
 
-        Looper.forLoop(0,listOfPatients.size(),i -> tableView.getItems().add(listOfPatients.get(i)));
-        tableView_client.getItems().add(listOfClients.get(0));
 
 
     }
