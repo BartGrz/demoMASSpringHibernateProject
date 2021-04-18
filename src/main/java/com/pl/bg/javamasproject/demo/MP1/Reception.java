@@ -1,12 +1,8 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
-import javafx.fxml.Initializable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -19,7 +15,6 @@ public class Reception implements Serializable {
     private final String filepath = System.getProperty("user.home") + "\\savedObject.txt";
     private static Map<Client, Set<Pet>> map = new HashMap<>(); //atrybut powt
     SaveOrRead saveOrRead = new SaveOrRead();
-    //FIXME nalezy dodac metode load ktora wczyta z pliku zserializowane objekty typu CLient i Pet
 
     public void addClientToSystem(Client client, Pet pet) throws IOException {
 
@@ -71,7 +66,7 @@ public class Reception implements Serializable {
                     .stream()
                     .filter(pet -> pet.getSpecies()
                             .equals(species.toString().toLowerCase()))
-                    .map(Pet::getName).collect(Collectors.joining(""));
+                    .map(Pet::getName).collect(Collectors.joining(";"));
 
             list.add(result);
         }
@@ -90,7 +85,17 @@ public class Reception implements Serializable {
         }
     }
 
-    public void commit(Map map) throws IOException {
+    public Optional<String> showClientsAndTheirOwnersById(int id) {
+
+        for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
+            Client client = it.next();
+            if (client.getId() == id) {
+                return Optional.of(client.getName() + " owner of : " + client.getPets());
+            }
+        }
+        return Optional.empty();
+    }
+    public void commit(Map map)  {
 
         saveOrRead.saveObject(filepath, map);
     }

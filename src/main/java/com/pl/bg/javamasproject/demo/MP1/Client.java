@@ -20,13 +20,8 @@ public class Client implements Serializable {
         this.name = name;
         this.lastName = lastName;
         this.phoneNumb = phoneNumb;
-      //  this.emailAdress = emailAdress;
+        //  this.emailAdress = emailAdress;
         count += 1;
-
-    }
-
-    public static class Builder {
-
     }
 
     public String getName() {

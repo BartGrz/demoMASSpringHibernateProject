@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 
-@Component
+
 public class SaveOrRead {
 
     public static final Logger logger = LoggerFactory.getLogger(SaveOrRead.class);
