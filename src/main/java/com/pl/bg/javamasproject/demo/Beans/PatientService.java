@@ -4,16 +4,16 @@ import com.pl.bg.javamasproject.demo.SQL.InsertQueryBuilder;
 import com.pl.bg.javamasproject.demo.SQL.SelectQueryBuilder;
 import com.pl.bg.javamasproject.demo.models.Patient;
 import com.pl.bg.javamasproject.demo.models.PatientRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
-@Service
+
 public class PatientService implements PatientRepository {
 
     @Override
     public List<Patient> findAll() {
+
 
         return new SelectQueryBuilder.Builder<Patient,Class>()
                 .build()
@@ -40,7 +40,7 @@ public class PatientService implements PatientRepository {
     public void save(Patient entity) {
 
         new InsertQueryBuilder.Builder<Patient>().insertInto(Patient.class)
-                .fields(new Patient().fields())
+                .fields(Patient.getListOfTableFields())
                 .value(entity.getPatient_name())
                 .value(entity.getId_card())
                 .value(entity.getId_client())

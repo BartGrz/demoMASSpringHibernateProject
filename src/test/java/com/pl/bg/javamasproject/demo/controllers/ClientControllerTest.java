@@ -38,7 +38,7 @@ class ClientControllerTest {
     void addRecord() {
         new InsertQueryBuilder.Builder<Client>()
                 .insertInto(Client.class)
-                .fields(new Client().fields())
+                .fields(Patient.getListOfTableFields())
                 .value("Tomasz")
                 .end().generateAndExecuteSQL();
     }

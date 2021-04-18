@@ -39,7 +39,7 @@ class PatientControllerTest {
 
         new InsertQueryBuilder.Builder<Patient>()
                 .insertInto(Patient.class)
-                .fields(new Patient().fields())
+                .fields(Patient.getListOfTableFields())
                 .value("kropka")
                 .value(3)
                 .value(3)

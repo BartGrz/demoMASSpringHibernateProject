@@ -1,4 +1,5 @@
 package com.pl.bg.javamasproject.demo.Beans;
+import com.pl.bg.javamasproject.demo.controllers.PatientController;
 import com.pl.bg.javamasproject.demo.models.Client;
 
 import com.pl.bg.javamasproject.demo.models.Patient;
@@ -7,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AppConfig {
+public class AppConfiguration {
 
     @Bean
    public PatientRepository patientRepository() {
@@ -18,7 +19,6 @@ public class AppConfig {
 
     @Bean(name = "patientBean")
     public Patient patient(){
-
         return new Patient();
     }
     @Bean(name = "clientBean")
