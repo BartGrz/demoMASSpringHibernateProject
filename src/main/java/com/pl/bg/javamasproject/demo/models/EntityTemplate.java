@@ -7,18 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 
 
 abstract class EntityTemplate  {
-    public static final Logger logger = LoggerFactory.getLogger(Patient.class);
+    public static final Logger logger = LoggerFactory.getLogger(EntityTemplate.class);
 
     /**
      * @method template impl {
@@ -32,56 +30,25 @@ abstract class EntityTemplate  {
      * }
      * @return list of declared fields
      */
-    public abstract List<String> fields();
+    public static List<String> fields(Class clazz) {
+
+        List<String> fieldsList = new ArrayList<>();
+        Field[] tab =clazz.getClass().getDeclaredFields();
+
+        Looper.forLoop(0,tab.length,i -> {
+            for (int j = 0; j < listColumns.size(); j++) {
+                if (!tab[i].getType().getSimpleName().equals(listColumns.get(j))) {
+                } else {
+                    fieldsList.add(tab[i].getName());
+                }
+            }
+        });
+        return fieldsList;
+    }
+    public abstract List<String> allFields();
     public abstract EnumSet fieldsEnum();
-    public List<String> listColumns = Arrays.asList("int","String","long","double");
+    public static List<String> listColumns = Arrays.asList("int","String","long","double");
 
-
-    @PostConstruct
-    public List<String> validateEnumVerTableColumns() {
-
-        List<String> listFields = fields();
-        EnumSet fieldsEnum = fieldsEnum();
-
-        List<String> listOfMissingColumnsInEnumClass = new ArrayList<>();
-        int index = 0;
-        if (listFields.size() == fieldsEnum.size()) {
-
-        } else {
-
-            index = listFields.size() - fieldsEnum.size();
-
-            Looper.forLoop(listFields.size()-index, listFields.size()
-                    , i -> listOfMissingColumnsInEnumClass.add(listFields.get(i)));
-
-            return listOfMissingColumnsInEnumClass;
-        }
-
-        return null;
-    }
-    public boolean checkIfEnumEqualsDeclaredFields(List<String> list) {
-
-        if (list==null) {
-            return true;
-        }
-        else return false;
-
-    }
-
-    //FIXME  nie dziala, trzeba sprawic by sie validowalo bez wywolywania bezposredniego
-    @PostConstruct
-    public void validate(){
-
-        List<String> list = validateEnumVerTableColumns();
-
-        if(!checkIfEnumEqualsDeclaredFields(validateEnumVerTableColumns())) {
-
-            logger.warn("ERROR , FIELDS MISSING :" + list);
-
-        }else {
-            logger.warn("DATA VALIDATION OK ");
-        }
-    }
 
 
 }
