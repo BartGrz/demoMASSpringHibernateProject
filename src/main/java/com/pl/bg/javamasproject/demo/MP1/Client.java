@@ -1,62 +1,37 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
-
-
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.ToString;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.Serializable;
 import java.util.*;
 
 @Data
 @RequiredArgsConstructor
+@ToString
 public class Client implements Serializable {
 
+    @Getter
     private  final int id = generateId();
+    @Getter
     private final String name;
+    @Getter
     private final String lastName;
+    @Getter
     private final String phoneNumb;
+    @Getter
+    private Set<Pet> pets = new HashSet<>();
 
     private static int count = 0;
-    public Set<Pet> pets = new HashSet<>();
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPhoneNumb() {
-        return phoneNumb;
-    }
-
-    public int getId() {
-        return id;
-    }
-
 
     public int generateId() {
         count+=1;
         return count;
     }
 
-    public Set<Pet> getPets() {
-        return pets;
-    }
 
 
-    @Override
-    public String toString() {
-        return "id="+ id+" ,name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phoneNumb='" + phoneNumb + '\'' +
-                '}';
-    }
 }
 
