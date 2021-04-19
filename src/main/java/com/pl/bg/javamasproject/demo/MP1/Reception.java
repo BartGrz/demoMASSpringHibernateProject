@@ -1,5 +1,7 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,7 +13,7 @@ import java.util.stream.Collectors;
 
 
 public class Reception implements Serializable {
-
+    private final Logger logger = LoggerFactory.getLogger(Reception.class);
     private final String filepath = System.getProperty("user.home") + "\\savedObject.txt";
     private static Map<Client, Set<Pet>> map = new HashMap<>(); //atrybut powt
     SaveOrRead saveOrRead = new SaveOrRead();
@@ -20,7 +22,7 @@ public class Reception implements Serializable {
 
         client.getPets().add(pet);
         map.put(client, client.getPets());
-        commit(map);
+     //   commit(map);
     }
 
     public static List<String> showPetsFromSystem() {
@@ -58,7 +60,7 @@ public class Reception implements Serializable {
         return Optional.empty();
     }
 
-    public static List<String> filterBySpecies(Enum<Species> species) {
+    public static List<String> filterBySpecies(Enum<Animal.Species> species) {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < map.values().size(); i++) {
             String result = map.values()
@@ -66,7 +68,7 @@ public class Reception implements Serializable {
                     .stream()
                     .filter(pet -> pet.getSpecies()
                             .equals(species.toString().toLowerCase()))
-                    .map(Pet::getName).collect(Collectors.joining(";"));
+                    .map(Pet::getName).collect(Collectors.joining());
 
             list.add(result);
         }
@@ -75,14 +77,18 @@ public class Reception implements Serializable {
     }
 
     public void addPetToExistingClient(int id, Pet pet) {
+        Client client = null;
         for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
-            Client client = it.next();
+            client  = it.next();
             if (client.getId() == id) {
                 client.pets.add(pet);
-            } else {
-                System.out.println("there is no client with given id =" + id);
+                logger.warn(pet.toString() + " added to client " + client.toString());
+                break;
+            }else {
+
             }
         }
+
     }
 
     public Optional<String> showClientsAndTheirOwnersById(int id) {
@@ -101,7 +107,7 @@ public class Reception implements Serializable {
     }
 
 
-    @PostConstruct
+  //  @PostConstruct
     public void load() {
 
             map = (Map<Client, Set<Pet>>) saveOrRead.loadObject(filepath);

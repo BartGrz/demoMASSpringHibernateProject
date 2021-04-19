@@ -1,21 +1,20 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 
-public class Pet extends Animal implements Serializable { //ekstensja
+@Data
+@RequiredArgsConstructor
+public class Pet implements Serializable { //ekstensja
 
-    private String name;
-    private Client client;
-    private String str;
-
-    public Pet(Species species,  String name) {
-        super(species);
-        this.name=name;
-    }
+    private final String name;
+    private final String species;
+    private  Client client;
 
     public String getName() {
         return name;
@@ -25,9 +24,20 @@ public class Pet extends Animal implements Serializable { //ekstensja
         return client;
     }
 
+    public String getSpecies() {
+        return species;
+    }
+
     @Override
     public String toString() {
-        return super.toString() +
-                "name=" + name ;
+        return "name=" + name  + " species =" + species;
+    }
+    public static String convertFromEnum(Enum val) {
+
+        return val.toString().toLowerCase();
+    }
+    enum Species implements Serializable {
+
+        REPTILE,BIRD,AMPHIBIAN,MAMMAL
     }
 }
