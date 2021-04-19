@@ -7,6 +7,7 @@
 
 * #### hibernate
 * #### spring
+* #### Lombok
 * #### javaFX
 * #### H2 database
 * #### flyway
