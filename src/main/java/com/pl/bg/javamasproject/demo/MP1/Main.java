@@ -33,14 +33,14 @@ public class Main {
 
         reception.addClientToSystem(client,new Pet("kropka", Pet.convertFromEnum(Pet.Species.MAMMAL)));
         reception.addClientToSystem(client_2,new Pet("smok",Pet.convertFromEnum(Pet.Species.REPTILE)));
-        reception.addClientToSystem(client_3,new Pet("omaha",Pet.convertFromEnum(Animal.Species.AMPHIBIAN)));
+        reception.addClientToSystem(client_3,new Pet("omaha",Pet.convertFromEnum(Pet.Species.AMPHIBIAN)));
         logger.info(""+Reception.showClientsFromSystem());
         logger.info(""+Reception.showPetsFromSystem());
         logger.info(""+Reception.findClientById(1));
         logger.info(""+Reception.findClientById(4));
        reception.addPetToExistingClient(1,new Pet("gad",Pet.convertFromEnum(Pet.Species.REPTILE)));
 
-        logger.info(""+Reception.filterBySpecies(Animal.Species.REPTILE));
+        logger.info(""+Reception.filterBySpecies(Pet.Species.REPTILE));
         logger.info(""+reception.showClientsAndTheirOwnersById(1));
 
 
