@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientTest {
 
+    /*
     @Test
     void fields() {
 
@@ -32,4 +33,6 @@ class ClientTest {
         System.out.println(fieldsList);
     }
 
+
+     */
 }

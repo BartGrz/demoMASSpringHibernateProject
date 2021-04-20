@@ -1,83 +1,57 @@
 package com.pl.bg.javamasproject.demo.models;
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
+import lombok.*;
+import net.fortuna.ical4j.model.component.Standard;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SqlFragmentAlias;
+import org.hibernate.type.StandardBasicTypes;
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 
 
 @Entity
 @Table(name = "patients")
-public class Patient extends EntityTemplate  {
-
+@Component
+@NoArgsConstructor
+@ToString
+public class Patient extends EntityTemplate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private int id;
+    @Getter
     @Column(name = "patient_name")
-    private String patient_name;
+    private  String patient_name;
+    @Getter
     @Column(name = "id_card")
     private int id_card;
+    @Getter
     @Column(name = "id_client")
     private int id_client;
+    @Getter
     @ManyToOne
     @JoinColumn(name = "id_client", insertable = false ,updatable = false)
     private Client client;
 
-    public Patient() {
-    }
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getPatient_name() {
-        return patient_name;
-    }
-
-    public void setPatient_name(String patient_name) {
+    public Patient( String patient_name, int id_card) {
         this.patient_name = patient_name;
-    }
-
-    public int getId_card() {
-        return id_card;
-    }
-
-    public void setId_card(int id_card) {
         this.id_card = id_card;
+
     }
 
-    public int getId_client() {
-        return id_client;
-    }
-
-    public void setId_client(int id_client) {
-        this.id_client = id_client;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    @Override
-    public String toString() {
-        return "('"+ patient_name +"'" +","+id_card +","+ id_client+")";
-    }
-
-
-    @Override
-    public List<String> allFields() {
+    public static List<String> allFields() {
 
             List<String> fieldsList = new ArrayList<>();
-            Field[] tab =this.getClass().getDeclaredFields();
+            Field[] tab =new Patient().getClass().getDeclaredFields();
             Looper.forLoop(0,tab.length, i -> fieldsList.add(tab[i].getName()));
 
             return fieldsList;
@@ -85,7 +59,19 @@ public class Patient extends EntityTemplate  {
 
 
     public static List<String> getListOfTableFields() {
-        return fields(Patient.class);
+
+        List<String> fieldsList = new ArrayList<>();
+        Field[] tab =new Patient().getClass().getDeclaredFields();
+
+        Looper.forLoop(1,tab.length,i -> {
+            for (int j = 0; j < listColumns.size(); j++) {
+                if (!tab[i].getType().getSimpleName().equals(listColumns.get(j))) {
+                } else {
+                    fieldsList.add(tab[i].getName());
+                }
+            }
+        });
+        return fieldsList;
     }
 
     @PostConstruct
@@ -116,7 +102,6 @@ public class Patient extends EntityTemplate  {
         }
         logger.info("VALIDATION OK");
     }
-
 
     @Override
     public EnumSet fieldsEnum() {

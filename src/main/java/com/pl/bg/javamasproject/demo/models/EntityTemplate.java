@@ -30,6 +30,7 @@ abstract class EntityTemplate  {
      * }
      * @return list of declared fields
      */
+    /*
     public static List<String> fields(Class clazz) {
 
         List<String> fieldsList = new ArrayList<>();
@@ -45,7 +46,9 @@ abstract class EntityTemplate  {
         });
         return fieldsList;
     }
-    public abstract List<String> allFields();
+
+     */
+  //  public abstract List<String> allFields();
     public abstract EnumSet fieldsEnum();
     public static List<String> listColumns = Arrays.asList("int","String","long","double");
 

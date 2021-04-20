@@ -42,31 +42,11 @@ public class Client extends EntityTemplate {
         return client_name;
     }
 
-    public void setClient_name(String client_name) {
-        this.client_name = client_name;
-    }
-
-    public int getClient_number() {
-        return client_number;
-    }
-
-    public void setClient_number(int client_number) {
-        this.client_number = client_number;
-    }
-
     public Set<Patient> getPatients() {
         return patients;
     }
 
-    public void setPatients(Set<Patient> patients) {
-        this.patients = patients;
-    }
 
-    @Override
-    public String toString() {
-        return "('" + client_name + "') + " + getPatients() ;
-    }
-    @Override
     public  List<String> allFields () {
 
         List<String> fieldsList = new ArrayList<>();
@@ -77,7 +57,18 @@ public class Client extends EntityTemplate {
 
     public static List<String> getListOfTableFields() {
 
-        return fields(Client.class);
+        List<String> fieldsList = new ArrayList<>();
+        Field[] tab =Client.class.getClass().getDeclaredFields();
+
+        Looper.forLoop(1,tab.length,i -> {
+            for (int j = 0; j < listColumns.size(); j++) {
+                if (!tab[i].getType().getSimpleName().equals(listColumns.get(j))) {
+                } else {
+                    fieldsList.add(tab[i].getName());
+                }
+            }
+        });
+        return fieldsList;
     }
     @Override
     public EnumSet fieldsEnum() {
