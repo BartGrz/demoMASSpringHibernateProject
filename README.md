@@ -8,10 +8,10 @@
     * ##### Project Lombok
     * ##### JavaFx
 * ### Frameworks : 
-  * #### hibernate
-  * #### spring 5
+  * #### Hibernate
+  * #### Spring 5
 * ### Database
   * #### H2 database
 * ### Tools
   * #### Maven
-  * #### flyway
+  * #### Flyway
