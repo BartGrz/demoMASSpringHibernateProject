@@ -1,28 +1,34 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
+
+import lombok.NoArgsConstructor;
+import net.fortuna.ical4j.model.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Reception implements Serializable {
-    private final Logger logger = LoggerFactory.getLogger(Reception.class);
-    private final String filepath = System.getProperty("user.home") + "\\savedObject.txt";
-    private static Map<Client, Set<Pet>> map = new HashMap<>(); //atrybut powt
-    SaveOrRead saveOrRead = new SaveOrRead();
+
+    private final Logger logger = LoggerFactory.getLogger(Reception.class); //atrybut zlozony
+    private final String filepath = System.getProperty("user.home") + "\\savedObject.txt"; //atrybut klasowy
+    private static Map<Client, Set<Pet>> map = new HashMap<>(); // ekstensja klasy
+    private SaveObject saveObject = new SaveObject();
+
+
 
     public void addClientToSystem(Client client, Pet pet) throws IOException {
 
         client.getPets().add(pet);
         map.put(client, client.getPets());
-     //   commit(map);
+        commit(map);
+
     }
 
     public static List<String> showPetsFromSystem() {
@@ -35,13 +41,12 @@ public class Reception implements Serializable {
 
                 listOfPets.add(it.next().stream().collect(Collectors.toList()).toString());
             }
-
         }
-
         return listOfPets;
     }
 
     public static List<String> showClientsFromSystem() {
+
         List<String> clients = new ArrayList<>();
         for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
             clients.add(it.next().toString());
@@ -49,7 +54,8 @@ public class Reception implements Serializable {
         return clients;
     }
 
-    public static Optional<Client> findClientById(int id) {
+    //przeciazenie
+    public static Optional<Client> findClientBy(int id) {
 
         for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
             Client client = it.next();
@@ -59,10 +65,32 @@ public class Reception implements Serializable {
         }
         return Optional.empty();
     }
+    //przeciazenie
+    public static Optional<List<Client>> findClientBy(String name) {
+            List<Client> list = new ArrayList<>();
 
-    public static List<String> filterBySpecies(Enum<Animal.Species> species) {
+        for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
+            Client client = it.next();
+
+            if (client.getName().equals(name)) {
+                list.add(client);
+            }
+        }
+
+        if(list.isEmpty()) {
+            return Optional.empty();
+        }else{
+            return Optional.of(list);
+        }
+
+    }
+
+
+    public static List<String> filterBySpecies(Enum<Pet.Species> species) {
+
         List<String> list = new ArrayList<>();
         for (int i = 0; i < map.values().size(); i++) {
+
             String result = map.values()
                     .stream().collect(Collectors.toList()).get(i)
                     .stream()
@@ -81,8 +109,8 @@ public class Reception implements Serializable {
         for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
             client  = it.next();
             if (client.getId() == id) {
-                client.pets.add(pet);
-                logger.warn(pet.toString() + " added to client " + client.toString());
+                client.getPets().add(pet);
+                logger.warn(pet.toString() + " added to client with id = " + client.getId());
                 break;
             }else {
 
@@ -90,8 +118,8 @@ public class Reception implements Serializable {
         }
 
     }
-
-    public Optional<String> showClientsAndTheirOwnersById(int id) {
+    //metoda klasowa
+    public Optional<String> showClientsAndTheirOwnersById(int id) { //atr opcjonalny
 
         for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
             Client client = it.next();
@@ -103,14 +131,49 @@ public class Reception implements Serializable {
     }
     public void commit(Map map)  {
 
-        saveOrRead.saveObject(filepath, map);
+        saveObject.saveObject(filepath, map);
     }
 
 
-  //  @PostConstruct
-    public void load() {
+    @PostConstruct
+    public void load() throws IOException {
 
-            map = (Map<Client, Set<Pet>>) saveOrRead.loadObject(filepath);
+        if(validateSavedFile(filepath)) {
+            map = (Map<Client, Set<Pet>>) loadObject();
+        }else {
+
+        }
+    }
+
+    public Object loadObject() {
+
+        FileInputStream fileInputStream = null;
+        Object obj = null;
+        try {
+            fileInputStream = new FileInputStream(filepath);
+            ObjectInputStream ois = new ObjectInputStream(fileInputStream);
+            obj = ois.readObject();
+            ois.close();
+            logger.info("Object loaded");
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("Object could not be loaded " + e);
+            map = new HashMap<>();
+
+
+        }
+        return  obj;
+
+    }
+
+    private boolean validateSavedFile(String filepath) throws IOException {
+        File file = new File(filepath);
+
+       if(file.length()==0) {
+            return false;
+        }else {
+            return true;
+        }
+
     }
 }
 
