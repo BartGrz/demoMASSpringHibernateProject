@@ -10,7 +10,6 @@
 * ### Frameworks : 
   * #### hibernate
   * #### spring 5
-  * #### Lombok
 * ### Database
   * #### H2 database
 * ### Tools
