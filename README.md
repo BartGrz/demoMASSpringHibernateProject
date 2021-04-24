@@ -3,12 +3,16 @@
 
 ## Created to learn more about hibernate framework and flyway migrations. Project for university will be based on what I will create here.
 
-### Tech 
-
-* #### hibernate
-* #### spring
-* #### Lombok
-* #### javaFX
-* #### H2 database
-* #### flyway
-* #### (later) CalendarFx [https://github.com/dlsc-software-consulting-gmbh/CalendarFX]
+* ### Language
+  * #### Java 11
+    * ##### Project Lombok
+    * ##### JavaFx
+* ### Frameworks : 
+  * #### hibernate
+  * #### spring 5
+  * #### Lombok
+* ### Database
+  * #### H2 database
+* ### Tools
+  * #### Maven
+  * #### flyway
