@@ -1,23 +1,44 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
-import com.pl.bg.javamasproject.demo.models.Patient;
-import com.sun.javafx.collections.ListListenerHelper;
-import org.junit.jupiter.api.Test;
 
+import com.pl.bg.javamasproject.demo.SQL.SelectQueryBuilder;
+import com.pl.bg.javamasproject.demo.models.Client;
+import com.pl.bg.javamasproject.demo.models.Patient;
+
+
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestTest {
 
+    /*
     @Test
     void tryThat() {
-        List list =  new com.pl.bg.javamasproject.demo.MP1.Test.TestBuilder<Patient,Class>()
+      List<Patient> list =  new com.pl.bg.javamasproject.demo.MP1.Test.TestBuilder<Patient,Class>()
                 .value(Patient.fieldsNames.PATIENT_NAME)
                 .value(Patient.fieldsNames.ID_CARD)
                 .build()
-                .GenerateSpecificSelectResult(Patient.class);
+                .generateBasicSelectResult(Patient.class);
 
-        System.out.println(list.get(0).toString());
+        System.out.println(list.stream().map(Patient::getPatient_name)
+        .collect(Collectors.joining()));
     }
+    @Test
+    void joinSelectTest() {
+        List<Client> list = new com.pl.bg.javamasproject.demo.MP1.Test.TestBuilder<Client,Patient>()
+                .set(Client.fieldsNames.PATIENTS)
+                .where(Patient.fieldsNames.ID_CLIENT)
+                .equal(1)
+                .build()
+                .generateJoinSelectResult(Client.class);;
+        System.out.println(list.get(0).toString());
+
+    }
+
+     */
 }

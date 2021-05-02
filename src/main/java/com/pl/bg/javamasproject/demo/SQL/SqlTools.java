@@ -1,12 +1,14 @@
 package com.pl.bg.javamasproject.demo.SQL;
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class SqlTools <T>{
 
-    T t;
+   private final T t;
 
     public static String formatFieldsToInsert(List<String> fields) {
 
@@ -26,18 +28,18 @@ public class SqlTools <T>{
         return stb.toString();
     }
 
-    public static  String  formatFieldsToSelectQuery(List<String> columns ) {
+    public String formatFieldsToSelectQuery(List<?> columns ) {
         StringBuilder stb = new StringBuilder();
 
         Looper.forLoop(0,columns.size(),i -> {
             if(i+1 == columns.size()) {
-                stb.append(columns.get(i));
+                stb.append(getTableFirstLetter(t) +"."+columns.get(i).toString().toLowerCase());
             }else {
-                stb.append(columns.get(i) + ",");
+                stb.append(getTableFirstLetter(t) +"."+columns.get(i).toString().toLowerCase() + ",");
 
             }
         });
-
+        System.out.println(" STB : " + stb.toString());
         return stb.toString();
     }
 
@@ -66,6 +68,9 @@ public class SqlTools <T>{
 
         return stb.toString();
     }
+    public  String getTableFirstLetter(T t) {
 
+        return t.getClass().getSimpleName().substring(0,1);
+    }
 
 }

@@ -21,8 +21,10 @@ import java.util.*;
 @Table(name = "patients")
 @Component
 @NoArgsConstructor
-@ToString
-public class Patient extends EntityTemplate implements Serializable {
+@ToString(exclude = "client")
+@Builder
+@AllArgsConstructor
+public class Patient extends EntityTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
@@ -41,12 +43,6 @@ public class Patient extends EntityTemplate implements Serializable {
     @JoinColumn(name = "id_client", insertable = false ,updatable = false)
     private Client client;
 
-
-    public Patient( String patient_name, int id_card) {
-        this.patient_name = patient_name;
-        this.id_card = id_card;
-
-    }
 
     public static List<String> allFields() {
 

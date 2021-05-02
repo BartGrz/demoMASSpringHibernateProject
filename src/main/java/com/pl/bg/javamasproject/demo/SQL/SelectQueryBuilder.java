@@ -93,7 +93,7 @@ public class SelectQueryBuilder<T,V> {
 
         return sqlCommends.getBasicSelectResult(fromT);
     }
-    public List<T> getFromSet(Set<T> set ){
+    public  List<T> getFromSet(Set<T> set ){
             List<T> list = new ArrayList<>();
         for(Iterator<T> it = set.iterator();it.hasNext();) {
             list.add(it.next());

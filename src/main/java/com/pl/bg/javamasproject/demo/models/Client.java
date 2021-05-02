@@ -2,48 +2,36 @@ package com.pl.bg.javamasproject.demo.models;
 
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.*;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.naming.Name;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
 @Entity
 @Table(name = "clients")
+@Builder
+@AllArgsConstructor
+@Component
 public class Client extends EntityTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private int id;
     @Column(name = "client_name")
+    @Getter@Setter
     private String client_name;
     @Column(name = "client_number")
+    @Getter@Setter
     private int client_number;
     @OneToMany(mappedBy = "client",cascade = CascadeType.ALL)
+    @Getter@Setter
     private Set<Patient> patients ;
 
     public Client() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getClient_name() {
-        return client_name;
-    }
-
-    public Set<Patient> getPatients() {
-        return patients;
     }
 
 

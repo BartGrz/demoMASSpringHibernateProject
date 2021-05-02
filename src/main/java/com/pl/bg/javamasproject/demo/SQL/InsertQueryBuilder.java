@@ -1,6 +1,7 @@
 package com.pl.bg.javamasproject.demo.SQL;
 
 import com.pl.bg.javamasproject.demo.models.Patient;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +54,11 @@ public class InsertQueryBuilder<T> {
       tableName=builder.tableName;
 
     }
+
     public void generateAndExecuteSQL(){
 
-     String sql = " Insert into " + tableName+" "+ new SqlTools<T>().formatFieldsToInsert(columnsList)
+     String sql = " Insert into " + tableName+" "+ new SqlTools<T>( t).formatFieldsToInsert(columnsList)
              + " values " + SqlTools.formatValuesToInsertQuery(valuesToAdd); ;
-
-        System.out.println(sql);
 
          new SqlCommends().executeSqlCommend_insert(sql);
 
@@ -68,7 +68,7 @@ public class InsertQueryBuilder<T> {
 
         new InsertQueryBuilder.Builder<Patient>()
                 .insertInto(Patient.class)
-                .fields(new Patient().fields())
+                .fields(Patient.getListOfTableFields())
                 .value("testest")
                 .value(1)
                 .value(1)

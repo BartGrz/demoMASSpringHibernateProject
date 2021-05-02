@@ -1,9 +1,6 @@
 package com.pl.bg.javamasproject.demo.MP1;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -22,7 +19,7 @@ public class Client implements Serializable {
     @Getter
     private final String phoneNumb;
     @Getter
-    private Set<Pet> pets = new HashSet<>();
+    private Set<Pet> pets = new HashSet<>(); //atrybut powtarzalny
 
     private static int count = 0;
 

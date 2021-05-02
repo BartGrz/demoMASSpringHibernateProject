@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
 
 import javax.persistence.Entity;
 import javax.persistence.Query;
@@ -17,6 +18,7 @@ import javax.persistence.metamodel.EntityType;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,26 +97,11 @@ public class SqlCommends<T> implements Repo<T> {
     public List<Object[]> executeSqlCommend_Select(String sql) {
 
         Query query = session(sessionFactory())
-                .createNativeQuery(sql);
+                .createQuery(sql);
 
         return  query.getResultList();
     }
 
-    public List<Object> readFromResultQuery(String sql) {
-        List<Object> results = new ArrayList<>();
-       List<Object[]> list = executeSqlCommend_Select(sql);
-        Looper.forLoop(0,list.size(),i -> {
-           // for(int j = 0;j<2;j++) {
-                System.out.println(list.get(i));
-
-              // results.add((list.get(i)[j]));
-               //FIXME dodac przerobienbie na zwrracanie zbudowanego obiektu
-
-         //   }
-
-        });
-        return results;
-    }
     public List<T> getJoinSelectResult(CriteriaQuery<T> cq,Object id) {
 
         Session session = session(sessionFactory());
@@ -123,7 +110,7 @@ public class SqlCommends<T> implements Repo<T> {
 
         return allQuery.getResultList();
     }
-    public List<T> getBasicSelectResult(CriteriaQuery<T> cq) {
+    public List<T>getBasicSelectResult(CriteriaQuery<T> cq) {
 
         Session session = session(sessionFactory());
         TypedQuery allQuery = session.createQuery(cq);

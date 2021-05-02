@@ -17,35 +17,38 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        Reception reception = context.getBean(Reception.class);
+        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+      //  Reception reception = context.getBean(Reception.class);
 
+
+       // Pet pet =new Pet("kropka",Pet.convertFromEnum(Pet.Species.MAMMAL),2009);
+       // System.out.println(pet);
 
 
              Client client = new Client("jan","janusz","602555444" ); //Optional.of("janjanusz@gmail")
              Client client_2 = new Client("Andrzej","Nowak","192554887");
              Client client_3 = new Client("Tomasz","Zawada","669112364");
-             List<Client> list = Arrays.asList(client,client_2,client_3);
-            //Looper.forLoop(0,list.size(),i -> logger.info(""+list.get(i)));
-
-       // System.out.println(client);
-
-
-        reception.addClientToSystem(client,new Pet("kropka", Pet.convertFromEnum(Pet.Species.MAMMAL)));
-        reception.addClientToSystem(client_2,new Pet("smok",Pet.convertFromEnum(Pet.Species.REPTILE)));
-        reception.addClientToSystem(client_3,new Pet("omaha",Pet.convertFromEnum(Pet.Species.AMPHIBIAN)));
-        logger.info(""+Reception.showClientsFromSystem());
-        logger.info(""+Reception.showPetsFromSystem());
-        logger.info(""+Reception.findClientById(1));
-        logger.info(""+Reception.findClientById(4));
-       reception.addPetToExistingClient(1,new Pet("gad",Pet.convertFromEnum(Pet.Species.REPTILE)));
-
-        logger.info(""+Reception.filterBySpecies(Pet.Species.REPTILE));
-        logger.info(""+reception.showClientsAndTheirOwnersById(1));
+           //  List<Client> list = Arrays.asList(client,client_2,client_3);
+          // Looper.forLoop(0,list.size(),i -> logger.info(""+list.get(i)));
 
 
 
-        context.close();
+
+       // reception.addClientToSystem(client,new Pet("kropka", Pet.convertFromEnum(Pet.Species.MAMMAL),2020));
+       //reception.addClientToSystem(client_2,new Pet("smok",Pet.convertFromEnum(Pet.Species.REPTILE),2017));
+       // reception.addClientToSystem(client_3,new Pet("omaha",Pet.convertFromEnum(Pet.Species.AMPHIBIAN),2010));
+     //   logger.info(""+Reception.showClientsFromSystem());
+      //  logger.info(""+Reception.showPetsFromSystem());
+      //  logger.info(""+Reception.findClientBy(1));
+        logger.info(""+Reception.findClientBy("Tomasz"));
+        //reception.addPetToExistingClient(1,new Pet("gad",Pet.convertFromEnum(Pet.Species.REPTILE),2021));
+
+        //logger.info(""+Reception.filterBySpecies(Pet.Species.REPTILE));
+       // logger.info(""+reception.showClientsAndTheirOwnersById(1).get());
+
+
+
+        //context.close();
 
     }
 
