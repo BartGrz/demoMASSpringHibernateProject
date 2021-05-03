@@ -7,9 +7,11 @@
   * #### Java 11
     * ##### Project Lombok
     * ##### JavaFx
+    * ##### JavaFx-Weaver[https://github.com/rgielen/javafx-weaver]
 * ### Frameworks : 
   * #### Hibernate
   * #### Spring 5
+  * #### Spring Boot 2 
 * ### Database
   * #### H2 database
 * ### Tools
