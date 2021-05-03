@@ -2,7 +2,6 @@ package com.pl.bg.javamasproject.demo.MP1;
 
 
 import lombok.NoArgsConstructor;
-import net.fortuna.ical4j.model.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

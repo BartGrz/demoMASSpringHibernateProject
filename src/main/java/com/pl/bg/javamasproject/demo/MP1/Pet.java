@@ -2,16 +2,11 @@ package com.pl.bg.javamasproject.demo.MP1;
 
 
 import lombok.*;
-import lombok.experimental.ExtensionMethod;
-import net.fortuna.ical4j.model.DateTime;
-import org.hibernate.annotations.Parameter;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Objects;
+
 
 @Data
 @ToString(exclude ={ "client","getYear","yearOfBirth"})

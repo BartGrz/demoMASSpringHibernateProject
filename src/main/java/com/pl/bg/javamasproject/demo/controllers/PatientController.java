@@ -1,62 +1,51 @@
 package com.pl.bg.javamasproject.demo.controllers;
 
-import com.pl.bg.javamasproject.demo.DemoApplication;
-import com.pl.bg.javamasproject.demo.GUI.PatientApplication;
+
 import com.pl.bg.javamasproject.demo.SQL.TestBul;
 import com.pl.bg.javamasproject.demo.SQL.SelectQueryBuilder;
 import com.pl.bg.javamasproject.demo.models.Client;
+import com.pl.bg.javamasproject.demo.models.ClientRepository;
 import com.pl.bg.javamasproject.demo.models.Patient;
 import com.pl.bg.javamasproject.demo.models.PatientRepository;
 import com.pl.bg.javamasproject.demo.tools.FXML_tools.TableViewBuild;
 import com.pl.bg.javamasproject.demo.tools.FXML_tools.TableViewCreator;
 import com.pl.bg.javamasproject.demo.tools.Looper;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.service.spi.InjectService;
+import net.rgielen.fxweaver.core.FxmlView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import com.pl.bg.javamasproject.demo.GUI.PatientApplication.StageReadyEvent;
 
 
 @Component
-public class PatientController  implements Initializable {
+@FxmlView("PatientController.fxml")
+public class PatientController implements Initializable {
 
     public static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
+    public PatientController() {
+    }
 
-    private  PatientRepository patientRepository;
+    private PatientRepository patientRepository;
+    private ClientRepository clientRepository;
 
-
-    public PatientController(PatientRepository patientRepository) {
+    @Autowired
+    public void setPatientRepository(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
     }
 
-
-
-
+    @Autowired
+    public void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @FXML
     Button button = new Button("ADD NEW PATIENT");
@@ -78,38 +67,28 @@ public class PatientController  implements Initializable {
     private final ObservableList<Integer> list_card = FXCollections.observableArrayList();
     private final Map<String, Integer> map = new HashMap<>();
 
+    @FXML
     public void addRecord() {
-        /*
-        new InsertQueryBuilder.Builder<Patient>()
-                .insertInto(Patient.class)
-                .fields(Patient.getListOfTableFields())
-                .value(name.getText())
-                .value(comboBox_card.getValue())
-                .value(map.get(comboBox_client.getValue().toString()))
-                .end()
-                .generateAndExecuteSQL();
 
-
-         */
 
         patientRepository.save(
                 Patient.builder()
-                        .patient_name(name.getText())
-                        .id_client(map.get(comboBox_client.getValue().toString()))
-                        .id_card((int) comboBox_card.getValue())
+                        .patient_name("aa")
+                        .id_client(2)
+                        .id_card(7)
                         .build()
         );
+
 
         refreshTables();
     }
 
 
-
-     @Override
-     public void initialize(URL location, ResourceBundle resources) {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
         begin();
-     }
+    }
 
     public void begin() {
 
@@ -152,20 +131,15 @@ public class PatientController  implements Initializable {
 
 
         fillingInComboBox();
-        /*
         refreshTables();
 
-
-         */
     }
-
 
 
     public void fillingInComboBox() {
 
-        List<Client> listClientNames = new SelectQueryBuilder.Builder<Client, Patient>()
-                .build()
-                .GenerateBasicSelectResult(Client.class);
+
+        List<Client> listClientNames = clientRepository.findAll();
 
 
         Looper.forLoop(0, listClientNames.size(),
@@ -189,25 +163,11 @@ public class PatientController  implements Initializable {
         tableView.getItems().removeAll(tableView.getItems());
         tableView_client.getItems().removeAll(tableView_client.getItems());
 
-        list_clients = new SelectQueryBuilder.Builder<Client, Patient>()
-                .build()
-                .GenerateBasicSelectResult(Client.class);
-
-
+        list_clients = clientRepository.findAll();
         List<Patient> list_patients = patientRepository.findAll();
 
-        if (!list_clients.isEmpty()) {
-
-            for (int i = 0; i < list_clients.size(); i++) {
-
-                listOfClients.add(list_clients.get(i));
-            }
-        } else {
-
-        }
-        Looper.forLoop(0, list_patients.size(), i -> listOfPatients.add(list_patients.get(i)));
-        Looper.forLoop(0, listOfPatients.size(), i -> tableView.getItems().add(listOfPatients.get(i)));
-        Looper.forLoop(0, listOfClients.size(), i -> tableView_client.getItems().add(listOfClients.get(i)));
+        TableViewBuild.addFromList(tableView, list_patients);
+        TableViewBuild.addFromList(tableView_client, list_clients);
 
     }
 
@@ -217,32 +177,21 @@ public class PatientController  implements Initializable {
         list_clients = new ArrayList<>();
         listOfClients = new ArrayList<>();
 
+
         TableViewBuild.removeAllFromView(tableView);
         TableViewBuild.removeAllFromView(tableView_client);
 
         int id = map.get(comboBox_chooseClient.getValue().toString());
 
+        List<Patient> pat = clientRepository.findAllPatientsByClientId(id);
+        Client client = clientRepository.findById(id).get();
+        listOfClients.add(client);
 
-        list_clients = TestBul.<Client, Patient>builder()
-                .set(Client.fieldsNames.PATIENTS)
-                .where(Patient.fieldsNames.ID_CLIENT)
-                .equal(id)
-                .build()
-                .generateJoinSelectResult(Client.class);
-
-        for (int i = 0; i < list_clients.size(); i++) {
-
-            listOfClients.add(list_clients.get(i));
+        for (int i = 0; i < pat.size(); i++) {
+            tableView.getItems().add(pat.get(i));
         }
-
-        if (!list_clients.isEmpty()) {
-
-            listOfPatients = new SelectQueryBuilder.Builder<>().build().getFromSet(list_clients.get(0).getPatients());
-
-            TableViewBuild.addFromList(tableView, listOfPatients);
-            tableView_client.getItems().add(listOfClients.get(0));
-        } else {
-
+        for (int i = 0; i < listOfClients.size(); i++) {
+            tableView_client.getItems().add(listOfClients.get(i));
         }
 
     }

@@ -2,17 +2,10 @@ package com.pl.bg.javamasproject.demo.models;
 
 import com.pl.bg.javamasproject.demo.tools.Looper;
 import lombok.*;
-import net.fortuna.ical4j.model.component.Standard;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.SqlFragmentAlias;
-import org.hibernate.type.StandardBasicTypes;
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.data.annotation.TypeAlias;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 
