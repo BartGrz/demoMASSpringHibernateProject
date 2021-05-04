@@ -15,7 +15,8 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @Component
-public class Client extends EntityTemplate {
+@NoArgsConstructor
+public class Client   {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,70 +32,13 @@ public class Client extends EntityTemplate {
     @Getter@Setter
     private Set<Patient> patients ;
 
-    public Client() {
-    }
-
-
-    public  List<String> allFields () {
+    public static List<String> fields(Class clazz) {
 
         List<String> fieldsList = new ArrayList<>();
-        Field[] tab =this.getClass().getDeclaredFields();
-        Looper.forLoop(0,tab.length, i -> fieldsList.add(tab[i].getName()));
+        Field[] tab =clazz.getClass().getDeclaredFields();
+
+        Looper.forLoop(0,tab.length,i ->fieldsList.add(tab[i].getName()));
         return fieldsList;
     }
-
-    public static List<String> getListOfTableFields() {
-
-        List<String> fieldsList = new ArrayList<>();
-        Field[] tab =Client.class.getClass().getDeclaredFields();
-
-        Looper.forLoop(1,tab.length,i -> {
-            for (int j = 0; j < listColumns.size(); j++) {
-                if (!tab[i].getType().getSimpleName().equals(listColumns.get(j))) {
-                } else {
-                    fieldsList.add(tab[i].getName());
-                }
-            }
-        });
-        return fieldsList;
-    }
-    @Override
-    public EnumSet fieldsEnum() {
-
-        return EnumSet.allOf(Client.fieldsNames.class);
-    }
-    public enum fieldsNames {
-
-       ID,CLIENT_NAME,CLIENT_NUMBER,PATIENTS
-    }
-
-    @PostConstruct
-    public void validate() {
-
-        List<String> list = new ArrayList<>(allFields());
-        boolean[] tab = new boolean[list.size()];
-
-        int index = 0;
-        for (Iterator it = fieldsEnum().iterator(); it.hasNext(); ) {
-            String enumField = it.next().toString().toLowerCase();
-            if (list.get(index).equals(enumField)) {
-                tab[index] = true;
-            } else {
-                tab[index] = false;
-            }
-            index += 1;
-        }
-        for (int i = 0; i<tab.length;i++) {
-
-            if (tab[i]) {
-
-            }else {
-                logger.error("NOT ALL FIELDS FROM CLASS ARE ADDED TO ENUM CLASS, fields missing : " + list.get(i));
-                break;
-            }
-        }
-        logger.info("VALIDATION OK");
-    }
-
 
 }

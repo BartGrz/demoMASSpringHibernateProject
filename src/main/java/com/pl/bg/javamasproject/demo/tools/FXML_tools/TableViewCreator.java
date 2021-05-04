@@ -1,49 +1,72 @@
 package com.pl.bg.javamasproject.demo.tools.FXML_tools;
 
+import com.pl.bg.javamasproject.demo.models.Client;
 import com.pl.bg.javamasproject.demo.models.Patient;
+import com.pl.bg.javamasproject.demo.tools.Looper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.jboss.jandex.ClassType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TableViewCreator <T,V>{
 
-    private  String columnName;
-    private String field;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+@AllArgsConstructor
+@Builder
+public class TableViewCreator<T, V> {
+
+    private final Logger logger = LoggerFactory.getLogger(TableViewCreator.class);
+
+    private final String columnName;
+    private final String classField;
     private TableColumn<T, V> column;
 
-    public static class Builder <T,V> {
 
-            private  String columnName;
-            private String field;
-            private TableColumn<T, V> column;
+    /**
+     * T is type of class field (as Integer or String or Double)
+     * V is class from which data will be obtained
+     *
+     * @return new TableColumn with column name and mapped class field
+     */
 
-        public Builder setField(Enum val) {
-                field =val.toString().toLowerCase();
-                return this;
-            }
-            public Builder setColumnName(String val) {
-                columnName =val;
-                return this;
-        }
-
-        public TableViewCreator build() {
-
-            return new TableViewCreator(this);
-        }
-    }
-
-    public TableViewCreator(Builder builder) {
-
-        field =builder.field;
-        columnName =builder.columnName;
-        column = builder.column;
-    }
 
     public TableColumn buildColumn() {
+
         column = new TableColumn<>(columnName);
-        column.setCellValueFactory(new PropertyValueFactory<>(field.toLowerCase()));
+        column.setCellValueFactory(new PropertyValueFactory<>(classField));
         return column;
     }
 
 
 }
+    /*
+    boolean validate(Class clazz) {
+
+        List<String> fieldsList = new ArrayList<>();
+        Field[] tab = clazz.getClass().getDeclaredFields();
+
+        Looper.forLoop(0, tab.length, i -> fieldsList.add(tab[i].getName()));
+
+        if (fieldsList.stream().anyMatch(s -> s.equals(classField))) {
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+}
+
+
+     */

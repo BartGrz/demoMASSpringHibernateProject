@@ -1,12 +1,21 @@
 package com.pl.bg.javamasproject.demo.SQL;
 
-import com.pl.bg.javamasproject.demo.SQL.SqlCommends;
 import lombok.*;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.List;
 
+
+/**
+ * only for learning purposes, all is managed by JPA repositories
+ * @param <T>
+ * @param <V>
+ */
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class TestBul <T,V>{
@@ -15,9 +24,9 @@ public class TestBul <T,V>{
     private Enum where;
     private Object equal;
     private Enum set;
-    private SqlCommends<T> sqlCommends ;
     @Singular
     private List<Enum> values = new ArrayList<>();
+    SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
     /**
      * creating CriteriaBuilder and CriteriaQuery for joinSelect and basiSelect
@@ -32,23 +41,26 @@ public class TestBul <T,V>{
 
     public List<T> generateJoinSelectResult(Class<T> tClass) {
 
-        sqlCommends = new SqlCommends<>();
 
-        Session session =  sqlCommends.getSession();
+        Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(tClass);
         Root<T> root  = cq.from(tClass);
         Join<T, V> joinPat = root.join(set.toString().toLowerCase());
         cq.where(cb.equal(joinPat.get(where.toString().toLowerCase()),cb.parameter(Integer.class,"id")));
-        return sqlCommends.getJoinSelectResult(cq,equal);
+       TypedQuery query= session.createQuery(cq);
+       query.setParameter("id",equal);
+
+
+        return query.getResultList();
 
     }
 
     public List<T> generateBasicSelectResult(Class<T> tClass) {
 
-        sqlCommends = new SqlCommends<>();
 
-        Session session =  sqlCommends.getSession();
+
+        Session session = sessionFactory.openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(tClass);
         Root<T> root  = cq.from(tClass);
@@ -58,7 +70,9 @@ public class TestBul <T,V>{
             cq.where(session.getCriteriaBuilder().equal(root.get(where.toString().toLowerCase()), equal));
         }
 
-        return sqlCommends.getBasicSelectResult(fromT);
+        TypedQuery query = session.createQuery(cq);
+
+        return query.getResultList();
     }
 
 

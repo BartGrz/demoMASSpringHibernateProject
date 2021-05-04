@@ -36,7 +36,7 @@ public class SpringbootJavaFxApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        FxWeaver fxWeaver = this.context.getBean(FxWeaver.class);
+     FxWeaver fxWeaver = this.context.getBean(FxWeaver.class);
      Parent root = fxWeaver.loadView(PatientController.class);
      Scene scene = new Scene(root);
      stage.setScene(scene);

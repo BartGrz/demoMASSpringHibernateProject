@@ -15,16 +15,14 @@ import java.util.*;
 @Component
 @NoArgsConstructor
 @ToString(exclude = "client")
-@Builder
-@AllArgsConstructor
-public class Patient extends EntityTemplate {
+public class Patient   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private int id;
     @Getter
     @Column(name = "patient_name")
-    private  String patient_name;
+    private String patient_name;
     @Getter
     @Column(name = "id_card")
     private int id_card;
@@ -33,76 +31,15 @@ public class Patient extends EntityTemplate {
     private int id_client;
     @Getter
     @ManyToOne
-    @JoinColumn(name = "id_client", insertable = false ,updatable = false)
+    @JoinColumn(name = "id_client", insertable = false, updatable = false)
     private Client client;
 
 
-    public static List<String> allFields() {
-
-            List<String> fieldsList = new ArrayList<>();
-            Field[] tab =new Patient().getClass().getDeclaredFields();
-            Looper.forLoop(0,tab.length, i -> fieldsList.add(tab[i].getName()));
-
-            return fieldsList;
+    public void updateFrom(Patient source) {
+        this.patient_name = source.patient_name;
+        this.id_client = source.id_client;
+        this.id_card=source.id_card;
     }
-
-
-    public static List<String> getListOfTableFields() {
-
-        List<String> fieldsList = new ArrayList<>();
-        Field[] tab =new Patient().getClass().getDeclaredFields();
-
-        Looper.forLoop(1,tab.length,i -> {
-            for (int j = 0; j < listColumns.size(); j++) {
-                if (!tab[i].getType().getSimpleName().equals(listColumns.get(j))) {
-                } else {
-                    fieldsList.add(tab[i].getName());
-                }
-            }
-        });
-        return fieldsList;
-    }
-
-    @PostConstruct
-    public void validate() {
-
-        List<String> list = allFields();
-        boolean[] tab = new boolean[list.size()];
-
-        int index = 0;
-        for (Iterator it = fieldsEnum().iterator(); it.hasNext(); ) {
-            String enumField = it.next().toString().toLowerCase();
-            if (list.get(index).equals(enumField)) {
-
-                tab[index] = true;
-            } else {
-                tab[index] = false;
-            }
-            index += 1;
-        }
-        for (int i = 0; i<tab.length;i++) {
-
-            if (tab[i]) {
-
-            }else {
-                logger.error("NOT ALL FIELDS FROM CLASS ARE ADDED TO ENUM CLASS, fields missing : " + list.get(i));
-                break;
-            }
-        }
-        logger.info("VALIDATION OK");
-    }
-
-    @Override
-    public EnumSet fieldsEnum() {
-
-        return EnumSet.allOf(fieldsNames.class);
-    }
-    public enum fieldsNames{
-      ID,PATIENT_NAME,ID_CARD,ID_CLIENT,CLIENT;
-
-    }
-
 
 }
-
 

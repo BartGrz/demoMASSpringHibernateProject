@@ -1,22 +1,19 @@
 package com.pl.bg.javamasproject.demo.controllers;
 
-
-
-
-import com.pl.bg.javamasproject.demo.SQL.InsertQueryBuilder;
-import com.pl.bg.javamasproject.demo.SQL.Repository;
-
-import com.pl.bg.javamasproject.demo.SQL.TestBul;
-import com.pl.bg.javamasproject.demo.models.Client;
 import com.pl.bg.javamasproject.demo.models.ClientRepository;
 import com.pl.bg.javamasproject.demo.models.Patient;
 
-import com.pl.bg.javamasproject.demo.models.PatientRepository;
-import com.pl.bg.javamasproject.demo.tools.Looper;
 
+import com.pl.bg.javamasproject.demo.models.PatientRepository;
+import javassist.NotFoundException;
+import org.hibernate.annotations.NotFound;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 
 
@@ -25,14 +22,30 @@ class PatientControllerTest {
     @Test
     void updateRecord() {
 
+       PatientRepository repo = mock(com.pl.bg.javamasproject.demo.models.PatientRepository.class);
+       Patient patient = mock(Patient.class);
+       if(repo.existById(40)){
 
+           System.out.println("404 not found");
+
+       }else {
+           repo.findById(anyInt()).ifPresent(updateFrom-> patient.updateFrom(updateFrom));
+           System.out.println("200 ok");
+       }
     }
 
     @Test
     void deleteRecord() {
 
-        new Repository<Patient>().delete(new Patient(), 4);
+        PatientRepository repo = mock(com.pl.bg.javamasproject.demo.models.PatientRepository.class);
 
+        if (repo.existById(80)) {
+
+            System.out.println("404 not found");
+
+        } else {
+            repo.deleteById(7);
+        }
     }
 
     @Test
@@ -45,41 +58,14 @@ class PatientControllerTest {
     void addRecord() {
 
 
-        new InsertQueryBuilder.Builder<Patient>()
-                .insertInto(Patient.class)
-                .fields(Patient.getListOfTableFields())
-                .value("kropka")
-                .value(1)
-                .value(1)
-                .end()
-                .generateAndExecuteSQL();
-
-
     }
 
-    /*
-    @Test
-    void testShowRecords() {
-
-        PatientService patientService = new PatientService();
-
-        List<Patient> list = TestBul.<Patient,Class>builder().build().generateBasicSelectResult(Patient.class);
-        List<Patient> list_2 = patientService.findAll();
-        System.out.println(list);
-    }
-
-     */
     @Test
     void testSqlRepo() {
 
         ClientRepository repo = mock(ClientRepository.class);
         ClientController clientController = new ClientController(repo);
-
        clientController.showRecords();
-
-
-
-
 
     }
 }
