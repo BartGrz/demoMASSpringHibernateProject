@@ -14,11 +14,11 @@ class ReceptionTest {
     @Test
     void showPetsFromSystem() {
         Map<Client,Set<Pet>> map = new HashMap<>();
-        Client client = new Client("Tomasz","Zawada","669112364");
+      //  Client client = new Client("Tomasz","Zawada","669112364");
        // Pet pet = new Pet(convertFromEnum(Pet.Species.MAMMAL),"kropka");
        // client.getPets().add(pet);
-        map.put(client,client.getPets());
-        List<Pet> pets = new ArrayList<>();
+     //   map.put(client,client.getPets());
+     //   List<Pet> pets = new ArrayList<>();
 
         System.out.println(map.keySet().stream().map(Client::getPets).collect(Collectors.toList()));
 
