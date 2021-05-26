@@ -18,7 +18,7 @@ public class Reception implements Serializable {
 
     private final Logger logger = LoggerFactory.getLogger(Reception.class); //atrybut zlozony
     private final String filepath = System.getProperty("user.home") + "\\savedObject.txt"; //atrybut klasowy
-    private static Map<Client, Set<Pet>> map = new HashMap<>(); // ekstensja klasy
+    private static Map<Client, Set<Pet>> map = new HashMap<>();
     private SaveObject saveObject = new SaveObject();
 
 
@@ -75,26 +75,6 @@ public class Reception implements Serializable {
             return Optional.empty();
         }
 
-        /*
-
-        List<Client> list = new ArrayList<>();
-
-        for (Iterator<Client> it = map.keySet().iterator(); it.hasNext(); ) {
-            Client client = it.next();
-
-            if (client.getName().equals(name)) {
-                list.add(client);
-            }
-        }
-
-        if (list.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(list);
-        }
-
-
-         */
     }
 
 
