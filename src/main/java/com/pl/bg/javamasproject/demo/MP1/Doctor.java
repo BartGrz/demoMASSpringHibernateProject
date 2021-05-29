@@ -7,12 +7,10 @@ import lombok.ToString;
 import org.springframework.expression.spel.ast.OpAnd;
 
 import javax.print.Doc;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@ToString(callSuper = true, exclude = {"doctorId", "bonus", "visits", "patients"})
+@ToString(callSuper = true, exclude = {"doctorId", "bonus", "visits", "patients","asociateDoctorWithVisit"})
 public class Doctor extends Employee {
 
     @Getter
@@ -22,15 +20,18 @@ public class Doctor extends Employee {
     @Getter
     private Set<MedicalVisit> visits = new HashSet<>();//asocjacja kwalifikowana
     @Getter
-    private int doctorId = generateId();
+    private int doctorId ;
     @Getter
     private final double bonus = 0.20;
+    private Map<Integer,MedicalVisit> asociateDoctorWithVisit = new HashMap<>();
 
     private static int count = 1;
 
     public Doctor(String firstName, String lastName, String PESEL, Enum<Employee.Contract> contract, Specialization specialization) {
         super(firstName, lastName, PESEL, contract);
         this.spec = specialization;
+        int idGenerate = generateId();
+        this.doctorId = idGenerate;
     }
 
     private int generateId() {
@@ -44,9 +45,10 @@ public class Doctor extends Employee {
     public void addVisit(MedicalVisit visit) {//metoda obslugujaca polaczenie w ramach asocjacji kwalifikowanej
         if (!visits.stream().anyMatch(medicalVisit -> medicalVisit.getId() == visit.getId())) {
             visits.add(visit);
-            visit.getDoctors().add(this); //polaczenie zwrotne
-            addPatient(visit.getPatient());
+           // visit.getDoctors().add(this);
+           // addPatient(visit.getPatient());
             visit.setVisitInformation(new VisitInformation(visit, this));
+            asociateDoctorWithVisit.put(getDoctorId(),visit); //polaczenie zwrotne
         } else {
             System.out.println("visit already added");
         }
@@ -62,11 +64,11 @@ public class Doctor extends Employee {
         }
     }
 
-    public Optional<MedicalVisit> findVisit(int id) { //kwalifikator w tym przypadku to id wizyty
+    public Optional<MedicalVisit> findVisit(MedicalVisit visit) { //kwalifikator w tym przypadku to id wizyty - > za pomoca mapy
 
-        if (visits.stream().anyMatch(medicalVisit -> medicalVisit.getId() == id)) {
+        if (asociateDoctorWithVisit.values().stream().anyMatch(medicalVisit -> medicalVisit.equals(visit))) {
 
-            return Optional.of(visits.stream().filter(medicalVisit -> medicalVisit.getId() == id).findAny().get());
+            return Optional.of(asociateDoctorWithVisit.values().stream().filter(medicalVisit -> medicalVisit.equals(visit)).findAny().get());
         } else {
             return Optional.empty();
         }

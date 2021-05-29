@@ -51,6 +51,7 @@ public class Pet implements Serializable {
         return getYear - yearOfBirth;
     }
 
+
     public static String convertFromEnum(Enum<Species> val) {
 
         return val.toString().toLowerCase();
